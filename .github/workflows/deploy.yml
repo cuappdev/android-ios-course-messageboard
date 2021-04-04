@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_KEY }}
           source: "./target/release/boredboard"
-          strip_components: 2
+          strip_components: 3
           target: "/boredboard"
       - uses: appleboy/ssh-action@master
         with:
