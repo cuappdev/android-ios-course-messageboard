@@ -2,11 +2,10 @@ use actix_web::http::StatusCode;
 use actix_web::{delete, get, middleware, post, web, App, HttpResponse, HttpServer, Responder};
 use chrono::{DateTime, Utc};
 use hex::ToHex;
-use ring::digest::{digest, Algorithm, Digest, SHA256};
+use ring::digest::{digest, SHA256};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::{Arc, RwLock};
+use std::sync::RwLock;
 
 const MAX_POSTS: usize = 1000;
 
@@ -62,7 +61,7 @@ struct DeletePost {
 
 #[derive(Deserialize)]
 struct ByPoster {
-    poster: Option<String>
+    poster: Option<String>,
 }
 
 #[get("/")]
@@ -71,10 +70,7 @@ async fn index() -> impl Responder {
 }
 
 #[get("/posts/")]
-async fn get_posts(
-    data: AppData,
-    web::Query(poster_hash): web::Query<ByPoster>,
-) -> impl Responder {
+async fn get_posts(data: AppData, web::Query(poster_hash): web::Query<ByPoster>) -> impl Responder {
     match data.read() {
         Ok(data) => {
             if let Some(ph) = poster_hash.poster {
@@ -94,7 +90,7 @@ async fn get_posts(
 }
 
 #[get("/posts/{post_id}/")]
-async fn get_post(web::Path(post_id): web::Path<(usize)>, data: AppData) -> impl Responder {
+async fn get_post(web::Path(post_id): web::Path<usize>, data: AppData) -> impl Responder {
     match data.read() {
         Ok(data) => match data.posts.get(&post_id) {
             Some(post) => HttpResponse::Ok().json2(post),

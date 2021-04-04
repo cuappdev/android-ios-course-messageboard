@@ -1,0 +1,12 @@
+[Unit]
+Description=Messageboard server for iOS course
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/boredboard
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
