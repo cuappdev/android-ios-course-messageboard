@@ -60,15 +60,35 @@ struct DeletePost {
     poster: String,
 }
 
+#[derive(Deserialize)]
+struct ByPoster {
+    poster: Option<String>
+}
+
 #[get("/")]
 async fn index() -> impl Responder {
     "Hello World!"
 }
 
 #[get("/posts/")]
-async fn get_posts(data: AppData) -> impl Responder {
+async fn get_posts(
+    data: AppData,
+    web::Query(poster_hash): web::Query<ByPoster>,
+) -> impl Responder {
     match data.read() {
-        Ok(data) => HttpResponse::Ok().json2(&data.posts.values().collect::<Vec<_>>()),
+        Ok(data) => {
+            if let Some(ph) = poster_hash.poster {
+                HttpResponse::Ok().json2(
+                    &data
+                        .posts
+                        .values()
+                        .filter(|v| v.hashed_poster == ph)
+                        .collect::<Vec<_>>(),
+                )
+            } else {
+                HttpResponse::Ok().json2(&data.posts.values().collect::<Vec<_>>())
+            }
+        }
         Err(_) => HttpResponse::new(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }
@@ -113,7 +133,7 @@ async fn create_post(web::Json(new_post): web::Json<CreatePost>, data: AppData) 
 
 #[post("/posts/{post_id}/")]
 async fn update_post(
-    web::Path(post_id): web::Path<(usize)>,
+    web::Path(post_id): web::Path<usize>,
     web::Json(update): web::Json<UpdatePost>,
     data: AppData,
 ) -> impl Responder {
@@ -131,7 +151,7 @@ async fn update_post(
 
 #[delete("/posts/{post_id}/")]
 async fn delete_post(
-    web::Path(post_id): web::Path<(usize)>,
+    web::Path(post_id): web::Path<usize>,
     web::Json(DeletePost { poster }): web::Json<DeletePost>,
     data: AppData,
 ) -> impl Responder {
