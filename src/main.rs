@@ -2,9 +2,9 @@ use actix_web::http::StatusCode;
 use actix_web::{delete, get, middleware, post, web, App, HttpResponse, HttpServer, Responder};
 use chrono::{DateTime, Utc};
 use hex::ToHex;
+use linked_hash_map::LinkedHashMap;
 use ring::digest::{digest, SHA256};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::RwLock;
 
 const MAX_POSTS: usize = 1000;
@@ -15,7 +15,7 @@ fn hash(input: String) -> String {
 
 struct State {
     id_counter: usize,
-    posts: HashMap<usize, Post>,
+    posts: LinkedHashMap<usize, Post>,
     id_start: usize,
 }
 
@@ -23,7 +23,7 @@ impl State {
     fn new() -> RwLock<Self> {
         RwLock::new(Self {
             id_counter: 0,
-            posts: HashMap::new(),
+            posts: LinkedHashMap::new(),
             id_start: 0,
         })
     }
