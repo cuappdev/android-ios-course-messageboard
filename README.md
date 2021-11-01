@@ -1,8 +1,8 @@
 # ios-course-messageboard
 
-A simple server in rust for use in our iOS course.
+A simple server in rust for use in our iOS **and Android** course.
 
-## Running
+## Running (SKIP IF COURSE STUDENT)
 Make sure you have [rust and cargo](https://www.rust-lang.org/tools/install) installed.
 Simply run `cargo run` in the root of this project to run the server.
 It currently binds to port 8080.
