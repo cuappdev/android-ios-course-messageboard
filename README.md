@@ -1,6 +1,6 @@
 # ios-course-messageboard
 
-A simple server in rust for use in our iOS **and Android** course.
+A simple server in rust for use in our Android and iOS course.
 
 ## Running (SKIP IF COURSE STUDENT)
 Make sure you have [rust and cargo](https://www.rust-lang.org/tools/install) installed.
