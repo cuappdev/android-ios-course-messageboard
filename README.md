@@ -1,4 +1,4 @@
-# ios-course-messageboard
+# android-ios-course-messageboard
 
 A simple server in rust for use in our Android and iOS course.
 
